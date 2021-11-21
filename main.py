@@ -69,6 +69,7 @@ if __name__ == '__main__':
                         turn = PLAYER_2
 
             if turn == PLAYER_2:
+                # TODO min-max
                 col = random.randint(0, COL - 1)
 
                 if is_valid_location(board, col):
