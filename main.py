@@ -1,3 +1,5 @@
+import random
+
 from game_brain import *
 
 
@@ -33,7 +35,7 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode(SIZE)
     game_over = False
     board = create_board()
-    turn = 0
+    turn = PLAYER_1
     score_1 = score_2 = 0
     while not game_over:
         draw_board(board)
@@ -48,11 +50,11 @@ if __name__ == '__main__':
                                  pygame.Rect(
                                      (0, 0),
                                      (WIDTH, SQUARE_SIZE)))
-                if turn == 0:
+                if turn == PLAYER_1:
                     pygame.draw.circle(screen, RED,
                                        (position, SQUARE_SIZE // 2),
                                        (SQUARE_SIZE // 2) - 5)
-                elif turn == 1:
+                elif turn == PLAYER_2:
                     pygame.draw.circle(screen, YELLOW,
                                        (position, SQUARE_SIZE // 2),
                                        (SQUARE_SIZE // 2) - 5)
@@ -60,18 +62,24 @@ if __name__ == '__main__':
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos_x = event.pos[0]
                 col = pos_x // SQUARE_SIZE
-                if turn == 0:
+                if turn == PLAYER_1:
                     if is_valid_location(board, col):
                         row = get_next(board, col)
                         drop(board, row, col, PLAYER_1)
+                        turn = PLAYER_2
 
-                else:
-                    if is_valid_location(board, col):
-                        row = get_next(board, col)
-                        drop(board, row, col, PLAYER_2)
+            if turn == PLAYER_2:
+                col = random.randint(0, COL - 1)
+
+                if is_valid_location(board, col):
+                    row = get_next(board, col)
+                    pygame.time.wait(500)
+                    drop(board, row, col, PLAYER_2)
+                    turn = PLAYER_1
+
                 print_board(board)
-                turn += 1
-                turn = turn % 2
+                # turn += 1
+                # turn = turn % 2
             if not (board == 0).any():
                 game_over = True
                 score_1 = check_board(board, PLAYER_1)
