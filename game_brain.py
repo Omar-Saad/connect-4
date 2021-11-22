@@ -54,12 +54,19 @@ def generate_possible_moves(state):
 
 def generate_children(board, piece):
     children = []
-    for child in generate_possible_moves(board):
-        temp = np.copy(board)
-        drop(temp, child[0], child[1], piece)
-        # print(temp)
-        # print("---------------------")
-        children.append(temp)
+    # for child in generate_possible_moves(board):
+    #     temp = np.copy(board)
+    #     drop(temp, child[0], child[1], piece)
+    #     # print(temp)
+    #     # print("---------------------")
+    #     children.append(temp)
+
+    for col in range(0, COL):
+        if is_valid_location(board, col):
+            row = get_next(board, col)
+            temp = np.copy(board)
+            drop(temp, row, col, piece)
+            children.append(temp)
 
     return children
 
@@ -67,11 +74,11 @@ def generate_children(board, piece):
 def maximize(board, k):
     if not (board == 0).any() or k == 0:
         return None, evaluate(board)
+    k -= 1
+    (max_child, max_utiility) = (None, -inf)
 
-    (max_child, max_utiility) = (None, inf)
-
-    for child in generate_children(board, PLAYER_1):
-        (temp_child, utility) = maximize(child, k - 1)
+    for child in generate_children(board, PLAYER_2):
+        (temp_child, utility) = minimize(child, k)
 
         if utility > max_utiility:
             max_child, max_utiility = child, utility
@@ -82,11 +89,11 @@ def maximize(board, k):
 def minimize(board, k):
     if not (board == 0).any() or k == 0:
         return None, evaluate(board)
-
+    k -= 1
     (min_child, min_utiility) = (None, inf)
 
     for child in generate_children(board, PLAYER_1):
-        (temp_child, utility) = maximize(child, k - 1)
+        (temp_child, utility) = maximize(child, k)
 
         if utility < min_utiility:
             min_child, min_utiility = child, utility
@@ -96,29 +103,32 @@ def minimize(board, k):
 
 def minmax(board, k):
     (child, utility) = maximize(board, k)
+    print(child)
+    print("util = " + str(utility))
     return child
+
 
 def print_board(board):
     print(board)
 
-
-board = [[0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0],
-         [0, 1, 2, 0, 0, 0, 0]]
-
-board = np.array(board)
-#
-# board[1][1] = 2
-# board[5][0] = 1
-# board[3][2] = 1
-# board[4][4] = 2
-# board[3][6] = 1
-# board[3][3] = 2
-# board[2][2] = 2
+# board = [[0, 0, 0, 0, 0, 0, 0],
+#          [0, 0, 0, 0, 0, 0, 0],
+#          [0, 0, 0, 0, 0, 0, 0],
+#          [0, 0, 0, 0, 0, 0, 0],
+#          [0, 0, 0, 0, 0, 0, 0],
+#          [0, 1, 2, 0, 0, 0, 0]]
+# #
+# board = np.array(board)
+# #
+# # board[1][1] = 2
+# # board[5][0] = 1
+# # board[3][2] = 1
+# # board[4][4] = 2
+# # board[3][6] = 1
+# # board[3][3] = 2
+# # board[2][2] = 2
 # print(board)
-print("---------------------------------------------")
-print(minmax(board, 1))
+# # print("---------------------------------------------")
+# # generate_children(board,PLAYER_1)
+# print(minmax(board, 2))
 # print(generate_children(board, PLAYER_1))

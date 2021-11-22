@@ -1,5 +1,3 @@
-import random
-
 from game_brain import *
 
 
@@ -70,15 +68,19 @@ if __name__ == '__main__':
 
             if turn == PLAYER_2:
                 # TODO min-max
-                col = random.randint(0, COL - 1)
+                # col = random.randint(0, COL - 1)
+                #
+                # if is_valid_location(board, col):
+                #     row = get_next(board, col)
+                #     pygame.time.wait(500)
+                #     drop(board, row, col, PLAYER_2)
+                board = minmax(board, 3)
+                # print_board(board)
+                # break
+                pygame.time.wait(500)
+                turn = PLAYER_1
 
-                if is_valid_location(board, col):
-                    row = get_next(board, col)
-                    pygame.time.wait(500)
-                    drop(board, row, col, PLAYER_2)
-                    turn = PLAYER_1
 
-                print_board(board)
                 # turn += 1
                 # turn = turn % 2
             if not (board == 0).any():
