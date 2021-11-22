@@ -33,7 +33,7 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode(SIZE)
     game_over = False
     board = create_board()
-    turn = 0
+    turn = random.randint(PLAYER_1_TURN, PLAYER_2_TURN)
     score_1 = score_2 = 0
     while not game_over:
         draw_board(board)
@@ -48,11 +48,11 @@ if __name__ == '__main__':
                                  pygame.Rect(
                                      (0, 0),
                                      (WIDTH, SQUARE_SIZE)))
-                if turn == 0:
+                if turn == PLAYER_1_TURN:
                     pygame.draw.circle(screen, RED,
                                        (position, SQUARE_SIZE // 2),
                                        (SQUARE_SIZE // 2) - 5)
-                elif turn == 1:
+                elif turn == PLAYER_2_TURN:
                     pygame.draw.circle(screen, YELLOW,
                                        (position, SQUARE_SIZE // 2),
                                        (SQUARE_SIZE // 2) - 5)
@@ -60,14 +60,14 @@ if __name__ == '__main__':
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos_x = event.pos[0]
                 col = pos_x // SQUARE_SIZE
-                if turn == 0:
+                if turn == PLAYER_1_TURN:
                     if is_valid_location(board, col):
-                        row = get_next(board, col)
+                        row = get_next_row(board, col)
                         drop(board, row, col, PLAYER_1)
 
                 else:
                     if is_valid_location(board, col):
-                        row = get_next(board, col)
+                        row = get_next_row(board, col)
                         drop(board, row, col, PLAYER_2)
                 print_board(board)
                 turn += 1
