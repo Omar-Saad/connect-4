@@ -76,7 +76,7 @@ if __name__ == '__main__':
                 game_over = True
                 score_1 = check_board(board, PLAYER_1)
                 score_2 = check_board(board, PLAYER_2)
-
+                print(score_1, score_2)
                 pygame.time.wait(3000)
 
             pygame.display.update()
