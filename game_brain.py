@@ -148,7 +148,7 @@ def generate_children(board, piece):
         c_board = np.copy(board)
         row = get_next_row(board, valid_col)
         drop(c_board, row, valid_col, piece)
-        children.append(temp)
+        children.append(c_board)
     return children
 
 
