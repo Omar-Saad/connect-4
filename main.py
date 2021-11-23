@@ -1,5 +1,3 @@
-import random
-
 from game_brain import *
 
 
@@ -58,7 +56,6 @@ if __name__ == '__main__':
                                        (position, SQUARE_SIZE // 2),
                                        (SQUARE_SIZE // 2) - 5)
 
-
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos_x = event.pos[0]
                 col = pos_x // SQUARE_SIZE
@@ -71,17 +68,17 @@ if __name__ == '__main__':
                         turn = turn % 2
 
             if turn == AI_TURN:
-#<<<<<<< omar
+                # <<<<<<< omar
                 # GET the next move from min-max (New Board)
                 board = minmax(board, 3)
                 pygame.time.wait(200)
-=======         # 2nd method
+                # 2nd method
                 col, score = minimax(board, 3, AI)
                 if is_valid_location(board, col):
                     row = get_next_row(board, col)
                     print(col)
                     drop(board, row, col, AI)
-#>>>>>>> main
+                # >>>>>>> main
                 turn += 1
                 turn = turn % 2
 

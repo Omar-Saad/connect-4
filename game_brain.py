@@ -1,6 +1,4 @@
-import math
 from math import inf
-
 from heurestic import evaluate
 from variables import *
 
@@ -49,11 +47,11 @@ def check_board(board, piece, streak=4):
             score += np.count_nonzero(conv == 4)
     return score
 
-  
+
 def print_board(board):
     print(np.flip(board, 0))
 
-    
+
 def generate_possible_moves(state):
     possible_moves = []
 
@@ -68,7 +66,7 @@ def generate_possible_moves(state):
 
     return possible_moves
 
-  
+
 def maximize(board, k):
     if not (board == 0).any() or k == 0:
         return None, evaluate(board)
@@ -137,7 +135,7 @@ def get_valid_location(board):
     for col in range(COL):
         if is_valid_location(board, col):
             valid.append(col)
-    return valid  
+    return valid
 
 
 def generate_children(board, piece):
@@ -148,7 +146,7 @@ def generate_children(board, piece):
         c_board = np.copy(board)
         row = get_next_row(board, valid_col)
         drop(c_board, row, valid_col, piece)
-        children.append(temp)
+        children.append(c_board)
     return children
 
 
@@ -194,7 +192,6 @@ def minimax(board, depth, piece):
                 column = col
         return column, score
 
-      
 # board = [[0, 0, 0, 0, 0, 0, 0],
 #          [0, 0, 0, 0, 0, 0, 0],
 #          [0, 0, 0, 0, 0, 0, 0],

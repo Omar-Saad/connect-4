@@ -2,6 +2,8 @@ import sys
 import numpy as np
 import pygame
 import scipy.signal
+import random
+import math
 
 ROWS = 6
 COL = 7
