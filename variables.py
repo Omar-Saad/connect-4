@@ -1,3 +1,8 @@
+import sys
+import numpy as np
+import pygame
+import scipy.signal
+
 ROWS = 6
 COL = 7
 SQUARE_SIZE = 100
