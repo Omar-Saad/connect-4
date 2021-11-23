@@ -1,3 +1,4 @@
+
 from variables import *
 
 
@@ -67,37 +68,57 @@ def diagonal_check(row, column, state, streak):
     return total
 
 
-def evaluate(state):
-    my_fours = check_for_streak(state, AI_PLAYER, 4) % 7
-    my_threes = check_for_streak(state, AI_PLAYER, 3)
-    my_twos = check_for_streak(state, AI_PLAYER, 2)
+def evaluate(state, piece, HUMAN_SCORE, AI_SCORE):
+    opp_piece = HUMAN_PLAYER
+    opp_score = HUMAN_SCORE
+    my_score = AI_SCORE
+    if piece == HUMAN_PLAYER:
+        opp_piece = AI_PLAYER
+        opp_score = AI_SCORE
+        my_score = HUMAN_SCORE
 
-    comp_fours = check_for_streak(state, HUMAN_PLAYER, 4) % 7
-    comp_threes = check_for_streak(state, HUMAN_PLAYER, 3)
-    comp_twos = check_for_streak(state, HUMAN_PLAYER, 2)
+    my_fours = check_for_streak(state, piece, 4) - my_score
+    my_threes = check_for_streak(state, piece, 3)
+    my_twos = check_for_streak(state, piece, 2)
 
-    score = 0
+    # #
+    opp_fours = check_for_streak(state, opp_piece, 4) - opp_score
+    opp_threes = check_for_streak(state, opp_piece, 3)
+    opp_twos = check_for_streak(state, opp_piece, 2)
 
-    if my_fours >= 1:
-        score += 250 * my_fours
-    elif my_threes >= 1:
-        score += 125
-    elif my_twos >= 1:
-        score += 60
+    score = (my_fours * 10000 + my_threes * 100 + my_twos) - (opp_fours * 10000 + opp_threes * 100 + opp_twos)
 
-    if comp_fours >= 1:
-        score -= 230 * comp_fours
-    elif comp_threes >= 1:
-        score -= 100
-    elif comp_twos >= 1:
-        score -= 40
+    # Check if utility =0 than play in the middle
+    if score == 0:
+        for row in range(ROWS):
+            if state[row, COL // 2] == 0:
+                score += 10
+                break
+
+    # score = 0
+    #
+    # if my_fours >= 1:
+    #     score += inf
+    # elif my_threes >= 1:
+    #     score += my_threes * 100
+    # elif my_twos >= 1:
+    #     score += my_twos * 20
+
+    # if opp_fours >= 1:
+    #     score -= inf
+    # elif opp_threes >= 1:
+    #     score -= opp_threes * 100
+    # elif opp_twos >= 1:
+    #     score -= opp_twos * 20
+
+    # score = score - 4 * Ai_score * 140 + 4* human_score * 140
 
     # if my_fours>=1:
     #     return 1000
-    # elif comp_fours>=1:
+    # elif opp_fours>=1:
     #     return -1000
-    # elif comp_threes>=1:
+    # elif opp_threes>=1:
     #     return -800
     #
+    # return score
     return score
-    # return (my_fours * 10 + my_threes * 5 + my_twos * 2) - (comp_fours * 10 + comp_threes * 5 + comp_twos * 2)

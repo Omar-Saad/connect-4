@@ -71,7 +71,7 @@ if __name__ == '__main__':
 
             if turn == AI_PLAYER:
                 # GET the next move from min-max (New Board)
-                board = minmax(board, 3)
+                board = minmax(board, 4)
                 pygame.time.wait(200)
                 turn = HUMAN_PLAYER
 
@@ -79,6 +79,8 @@ if __name__ == '__main__':
                 game_over = True
                 score_1 = check_board(board, HUMAN_PLAYER)
                 score_2 = check_board(board, AI_PLAYER)
+                print("SCORE")
+                print("HUMAN : " + str(score_1) + "   AI :" + str(score_2))
 
                 pygame.time.wait(3000)
 

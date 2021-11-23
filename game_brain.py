@@ -78,14 +78,14 @@ def generate_children(board, piece):
     return children
 
 
-def maximize(board, k):
+def maximize(board, k, HUMAN_SCORE, AI_SCORE):
     if not (board == 0).any() or k == 0:
-        return None, evaluate(board)
+        return None, evaluate(board, AI_PLAYER, HUMAN_SCORE, AI_SCORE)
     k -= 1
     (max_child, max_utility) = (None, -inf)
 
     for child in generate_children(board, AI_PLAYER):
-        (temp_child, utility) = minimize(child, k)
+        (temp_child, utility) = minimize(child, k, HUMAN_SCORE, AI_SCORE)
 
         if utility > max_utility:
             max_child, max_utility = child, utility
@@ -93,14 +93,14 @@ def maximize(board, k):
     return max_child, max_utility
 
 
-def minimize(board, k):
+def minimize(board, k, HUMAN_SCORE, AI_SCORE):
     if not (board == 0).any() or k == 0:
-        return None, evaluate(board)
+        return None, evaluate(board, HUMAN_PLAYER, HUMAN_SCORE, AI_SCORE)
     k -= 1
     (min_child, min_utility) = (None, inf)
 
     for child in generate_children(board, HUMAN_PLAYER):
-        (temp_child, utility) = maximize(child, k)
+        (temp_child, utility) = maximize(child, k, HUMAN_SCORE, AI_SCORE)
 
         if utility < min_utility:
             min_child, min_utility = child, utility
@@ -109,7 +109,7 @@ def minimize(board, k):
 
 
 def minmax(board, k):
-    (child, utility) = maximize(board, k)
+    (child, utility) = maximize(board, k, check_board(board, HUMAN_PLAYER), check_board(board, AI_PLAYER))
     print(child)
     print("util = " + str(utility))
     return child
