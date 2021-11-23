@@ -72,7 +72,7 @@ def is_terminal(board):
     return not (board == 0).any()
 
 
-def evaluate(board):
+def evaluate(board, piece):
     # TODO: evaluate function
     pass
 
@@ -97,17 +97,44 @@ def generate_children(board, piece):
     return children
 
 
-def minimax(node, depth, piece):
-    # TODO: return column of the node
-    if depth == 0 or is_terminal(node):
-        return evaluate(node)
+def minimax(board, depth, piece):
+    # TODO: return column of the board
+    valid_location = get_valid_location(board)
+    if depth == 0 or is_terminal(board):
+        if is_terminal(board):
+            ai_score = check_board(board, AI, 4)
+            player_score = check_board(board, PLAYER_1, 4)
+            if ai_score > player_score:
+                return None, math.inf
+            elif ai_score < player_score:
+                return None, -math.inf
+            else:
+                return None, 0
+        else:
+            return None, evaluate(board, AI)
+
     if piece == AI:
-        value = -math.inf
-        for child in generate_children(node, piece):
-            value = max(value, minimax(child, depth - 1, PLAYER_1))
-        return value
+        score = -math.inf
+        column = random.choice(valid_location)
+        for col in valid_location:
+            row = get_next_row(board, col)
+            board_copy = board.copy()
+            drop(board_copy, row, col, AI)
+            max_score = minimax(board_copy, depth - 1, PLAYER_1)[1]
+            if max_score > score:
+                score = max_score
+                column = col
+        return column, score
+
     else:
-        value = math.inf
-        for child in generate_children(node, piece):
-            value = min(value, minimax(child, depth - 1, AI))
-        return value
+        score = math.inf
+        column = random.choice(valid_location)
+        for col in valid_location:
+            row = get_next_row(board, col)
+            board_copy = board.copy()
+            drop(board_copy, row, col, PLAYER_1)
+            min_score = minimax(board_copy, depth - 1, AI)[1]
+            if min_score < score:
+                score = min_score
+                column = col
+        return column, score

@@ -33,7 +33,7 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode(SIZE)
     game_over = False
     board = create_board()
-    turn = random.randint(PLAYER_1_TURN, PLAYER_2_TURN)
+    turn = random.randint(HUMAN_TURN, AI_TURN)
     score_1 = score_2 = 0
     while not game_over:
         draw_board(board)
@@ -48,34 +48,34 @@ if __name__ == '__main__':
                                  pygame.Rect(
                                      (0, 0),
                                      (WIDTH, SQUARE_SIZE)))
-                if turn == PLAYER_1_TURN:
+                if turn == HUMAN_TURN:
                     pygame.draw.circle(screen, RED,
-                                       (position, SQUARE_SIZE // 2),
-                                       (SQUARE_SIZE // 2) - 5)
-                elif turn == PLAYER_2_TURN:
-                    pygame.draw.circle(screen, YELLOW,
                                        (position, SQUARE_SIZE // 2),
                                        (SQUARE_SIZE // 2) - 5)
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos_x = event.pos[0]
                 col = pos_x // SQUARE_SIZE
-                if turn == PLAYER_1_TURN:
+                if turn == HUMAN_TURN:
                     if is_valid_location(board, col):
                         row = get_next_row(board, col)
-                        drop(board, row, col, PLAYER_1)
+                        drop(board, row, col, HUMAN)
+                        turn += 1
+                        turn = turn % 2
 
-                else:
-                    if is_valid_location(board, col):
-                        row = get_next_row(board, col)
-                        drop(board, row, col, PLAYER_2)
-                print_board(board)
+            if turn == AI_TURN:
+                col, score = minimax(board, 3, AI)
+                if is_valid_location(board, col):
+                    row = get_next_row(board, col)
+                    print(col)
+                    drop(board, row, col, AI)
                 turn += 1
                 turn = turn % 2
+
             if not (board == 0).any():
                 game_over = True
-                score_1 = check_board(board, PLAYER_1)
-                score_2 = check_board(board, PLAYER_2)
+                score_1 = check_board(board, HUMAN)
+                score_2 = check_board(board, AI)
                 print(score_1, score_2)
                 pygame.time.wait(3000)
 
