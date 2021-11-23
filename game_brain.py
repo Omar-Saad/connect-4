@@ -1,3 +1,7 @@
+import math
+from math import inf
+
+from heurestic import evaluate
 from variables import *
 
 
@@ -45,9 +49,64 @@ def check_board(board, piece, streak=4):
             score += np.count_nonzero(conv == 4)
     return score
 
-
+  
 def print_board(board):
     print(np.flip(board, 0))
+
+    
+def generate_possible_moves(state):
+    possible_moves = []
+
+    for j in range(COL):
+        for i in range(ROWS):
+            if state[i][j] == 1 or state[i][j] == 2:
+                possible_moves.append([i - 1, j])
+                break
+            if i == 5:
+                possible_moves.append([i, j])
+                break
+
+    return possible_moves
+
+  
+def maximize(board, k):
+    if not (board == 0).any() or k == 0:
+        return None, evaluate(board)
+    k -= 1
+    (max_child, max_utility) = (None, -inf)
+
+    for child in generate_children(board, AI_PLAYER):
+        (temp_child, utility) = minimize(child, k)
+
+        if utility > max_utility:
+            max_child, max_utility = child, utility
+
+    return max_child, max_utility
+
+
+def minimize(board, k):
+    if not (board == 0).any() or k == 0:
+        return None, evaluate(board)
+    k -= 1
+    (min_child, min_utility) = (None, inf)
+
+    for child in generate_children(board, HUMAN_PLAYER):
+        (temp_child, utility) = maximize(child, k)
+
+        if utility < min_utility:
+            min_child, min_utility = child, utility
+
+    return min_child, min_utility
+
+
+def minmax(board, k):
+    (child, utility) = maximize(board, k)
+    print(child)
+    print("util = " + str(utility))
+    return child
+
+
+# SECOND minimax implementation
 
 
 '''
@@ -72,28 +131,24 @@ def is_terminal(board):
     return not (board == 0).any()
 
 
-def evaluate(board, piece):
-    # TODO: evaluate function
-    pass
-
-
 def get_valid_location(board):
     """return valid column in board"""
     valid = []
     for col in range(COL):
         if is_valid_location(board, col):
             valid.append(col)
-    return valid
+    return valid  
 
 
 def generate_children(board, piece):
     """generate 7 children at most"""
+    valid = get_valid_location(board)
     children = []
-    for valid_col in get_valid_location(board):
+    for valid_col in valid:
         c_board = np.copy(board)
         row = get_next_row(board, valid_col)
         drop(c_board, row, valid_col, piece)
-
+        children.append(temp)
     return children
 
 
@@ -138,3 +193,26 @@ def minimax(board, depth, piece):
                 score = min_score
                 column = col
         return column, score
+
+      
+# board = [[0, 0, 0, 0, 0, 0, 0],
+#          [0, 0, 0, 0, 0, 0, 0],
+#          [0, 0, 0, 0, 0, 0, 0],
+#          [0, 0, 0, 0, 0, 0, 0],
+#          [0, 0, 0, 0, 0, 0, 0],
+#          [0, 1, 2, 0, 0, 0, 0]]
+# #
+# board = np.array(board)
+# #
+# # board[1][1] = 2
+# # board[5][0] = 1
+# # board[3][2] = 1
+# # board[4][4] = 2
+# # board[3][6] = 1
+# # board[3][3] = 2
+# # board[2][2] = 2
+# print(board)
+# # print("---------------------------------------------")
+# # generate_children(board,PLAYER_1)
+# print(minmax(board, 2))
+# print(generate_children(board, PLAYER_1))

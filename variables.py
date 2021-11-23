@@ -2,8 +2,6 @@ import sys
 import numpy as np
 import pygame
 import scipy.signal
-import math
-import random
 
 ROWS = 6
 COL = 7
@@ -16,6 +14,10 @@ BLUE = (0, 0, 255)
 BLACK = (0, 0, 0)
 YELLOW = (255, 255, 0)
 EMPTY = 0
+
+HUMAN_PLAYER = 1
+AI_PLAYER = 2
+
 PLAYER_1 = HUMAN = 1
 PLAYER_2 = AI = 2
 PLAYER_1_TURN = HUMAN_TURN = 0
