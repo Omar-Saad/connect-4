@@ -1,3 +1,4 @@
+import math
 from math import inf
 
 from heurestic import evaluate
@@ -14,27 +15,39 @@ def drop(board, row, col, piece):
 
 
 def is_valid_location(board, col):
+    """checks if the selected column contains empty space or not"""
     return board[ROWS - 1][col] == EMPTY
 
 
-def get_next(board, col):
+def get_next_row(board, col):
+    """Returns the row corresponding to the valid column in the board"""
     for row in range(ROWS):
         if board[row][col] == EMPTY:
             return row
 
 
-def check_board(board, piece):
+def check_board(board, piece, streak=4):
+    # TODO : optimization using sparse matrix
+    """The function use convolution to calculate how many piece is connected in the board
+    Example:
+    0   0   0   0   0   0                               0   0   0   0   0   0
+    1   1   1   1   1   1                               1   2   3   4   4   4
+    1   1   0   1   1   1   conv  1   1   1   1     =   1   2   0   1   2   3
+    1   1   1   0   1   1                               1   2   3   0   0   0
+    1   0   1   1   1   1                               1   0   1   2   3   4
+    """
     horizontal_window = np.array([[1, 1, 1, 1]], dtype=np.uint8)
     vertical_window = np.transpose(horizontal_window)
     diagonal_window = np.eye(4, dtype=np.uint8)
     inv_diagonal_window = np.fliplr(diagonal_window)
     winning_windows = [horizontal_window, vertical_window, diagonal_window, inv_diagonal_window]
+    score = 0
     for window in winning_windows:
         conv = scipy.signal.convolve(board == piece, window, mode="valid")
-        # TODO :    count 4 in conv
-        if (conv == 4).any():
-            return True
-    return False
+        # count streak in conv matrix
+        if (conv == streak).any():
+            score += np.count_nonzero(conv == 4)
+    return score
 
 
 def generate_possible_moves(state):
@@ -53,17 +66,11 @@ def generate_possible_moves(state):
 
 
 def generate_children(board, piece):
+    """generate 7 children at most"""
     children = []
-    # for child in generate_possible_moves(board):
-    #     temp = np.copy(board)
-    #     drop(temp, child[0], child[1], piece)
-    #     # print(temp)
-    #     # print("---------------------")
-    #     children.append(temp)
-
     for col in range(0, COL):
         if is_valid_location(board, col):
-            row = get_next(board, col)
+            row = get_next_row(board, col)
             temp = np.copy(board)
             drop(temp, row, col, piece)
             children.append(temp)
@@ -75,30 +82,30 @@ def maximize(board, k):
     if not (board == 0).any() or k == 0:
         return None, evaluate(board)
     k -= 1
-    (max_child, max_utiility) = (None, -inf)
+    (max_child, max_utility) = (None, -inf)
 
-    for child in generate_children(board, PLAYER_2):
+    for child in generate_children(board, AI_PLAYER):
         (temp_child, utility) = minimize(child, k)
 
-        if utility > max_utiility:
-            max_child, max_utiility = child, utility
+        if utility > max_utility:
+            max_child, max_utility = child, utility
 
-    return max_child, max_utiility
+    return max_child, max_utility
 
 
 def minimize(board, k):
     if not (board == 0).any() or k == 0:
         return None, evaluate(board)
     k -= 1
-    (min_child, min_utiility) = (None, inf)
+    (min_child, min_utility) = (None, inf)
 
-    for child in generate_children(board, PLAYER_1):
+    for child in generate_children(board, HUMAN_PLAYER):
         (temp_child, utility) = maximize(child, k)
 
-        if utility < min_utiility:
-            min_child, min_utiility = child, utility
+        if utility < min_utility:
+            min_child, min_utility = child, utility
 
-    return min_child, min_utiility
+    return min_child, min_utility
 
 
 def minmax(board, k):
@@ -108,9 +115,48 @@ def minmax(board, k):
     return child
 
 
-def print_board(board):
-    print(board)
+# SECOND minimax implementation
 
+
+'''
+minimax pseudocode => Wikipedia
+function  minimax(node, depth, maximizingPlayer) is
+    if depth = 0 or node is a terminal node then
+        return the heuristic value of node
+    if maximizingPlayer then
+        value := −∞
+        for each child of node do
+            value := max(value, minimax(child, depth − 1, FALSE))
+        return value
+    else (* minimizing player *)
+        value := +∞
+        for each child of node do
+            value := min(value, minimax(child, depth − 1, TRUE))
+        return value
+'''
+
+
+def is_terminal(board):
+    return not (board == 0).any()
+
+
+def minimax(node, depth, piece):
+    # TODO: return column of the node
+    if depth == 0 or is_terminal(node):
+        return evaluate(node)
+    if piece == AI_PLAYER:
+        value = -math.inf
+        for child in generate_children(node, piece):
+            value = max(value, minimax(child, depth - 1, HUMAN_PLAYER))
+        return value
+    else:
+        value = math.inf
+        for child in generate_children(node, piece):
+            value = min(value, minimax(child, depth - 1, AI_PLAYER))
+        return value
+
+def print_board(board):
+    print(np.flip(board, 0))
 # board = [[0, 0, 0, 0, 0, 0, 0],
 #          [0, 0, 0, 0, 0, 0, 0],
 #          [0, 0, 0, 0, 0, 0, 0],

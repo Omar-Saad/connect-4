@@ -1,3 +1,5 @@
+import random
+
 from game_brain import *
 
 
@@ -33,7 +35,8 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode(SIZE)
     game_over = False
     board = create_board()
-    turn = PLAYER_1
+    # Choosing random player to start the game
+    turn = random.randint(HUMAN_PLAYER, AI_PLAYER)
     score_1 = score_2 = 0
     while not game_over:
         draw_board(board)
@@ -48,11 +51,11 @@ if __name__ == '__main__':
                                  pygame.Rect(
                                      (0, 0),
                                      (WIDTH, SQUARE_SIZE)))
-                if turn == PLAYER_1:
+                if turn == HUMAN_PLAYER:
                     pygame.draw.circle(screen, RED,
                                        (position, SQUARE_SIZE // 2),
                                        (SQUARE_SIZE // 2) - 5)
-                elif turn == PLAYER_2:
+                elif turn == AI_PLAYER:
                     pygame.draw.circle(screen, YELLOW,
                                        (position, SQUARE_SIZE // 2),
                                        (SQUARE_SIZE // 2) - 5)
@@ -60,33 +63,22 @@ if __name__ == '__main__':
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos_x = event.pos[0]
                 col = pos_x // SQUARE_SIZE
-                if turn == PLAYER_1:
+                if turn == HUMAN_PLAYER:
                     if is_valid_location(board, col):
-                        row = get_next(board, col)
-                        drop(board, row, col, PLAYER_1)
-                        turn = PLAYER_2
+                        row = get_next_row(board, col)
+                        drop(board, row, col, HUMAN_PLAYER)
+                        turn = AI_PLAYER
 
-            if turn == PLAYER_2:
-                # TODO min-max
-                # col = random.randint(0, COL - 1)
-                #
-                # if is_valid_location(board, col):
-                #     row = get_next(board, col)
-                #     pygame.time.wait(500)
-                #     drop(board, row, col, PLAYER_2)
+            if turn == AI_PLAYER:
+                # GET the next move from min-max (New Board)
                 board = minmax(board, 3)
-                # print_board(board)
-                # break
-                pygame.time.wait(500)
-                turn = PLAYER_1
+                pygame.time.wait(200)
+                turn = HUMAN_PLAYER
 
-
-                # turn += 1
-                # turn = turn % 2
             if not (board == 0).any():
                 game_over = True
-                score_1 = check_board(board, PLAYER_1)
-                score_2 = check_board(board, PLAYER_2)
+                score_1 = check_board(board, HUMAN_PLAYER)
+                score_2 = check_board(board, AI_PLAYER)
 
                 pygame.time.wait(3000)
 
