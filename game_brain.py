@@ -49,7 +49,11 @@ def check_board(board, piece, streak=4):
             score += np.count_nonzero(conv == 4)
     return score
 
+  
+def print_board(board):
+    print(np.flip(board, 0))
 
+    
 def generate_possible_moves(state):
     possible_moves = []
 
@@ -64,20 +68,7 @@ def generate_possible_moves(state):
 
     return possible_moves
 
-
-def generate_children(board, piece):
-    """generate 7 children at most"""
-    children = []
-    for col in range(0, COL):
-        if is_valid_location(board, col):
-            row = get_next_row(board, col)
-            temp = np.copy(board)
-            drop(temp, row, col, piece)
-            children.append(temp)
-
-    return children
-
-
+  
 def maximize(board, k):
     if not (board == 0).any() or k == 0:
         return None, evaluate(board)
@@ -140,23 +131,70 @@ def is_terminal(board):
     return not (board == 0).any()
 
 
-def minimax(node, depth, piece):
-    # TODO: return column of the node
-    if depth == 0 or is_terminal(node):
-        return evaluate(node)
-    if piece == AI_PLAYER:
-        value = -math.inf
-        for child in generate_children(node, piece):
-            value = max(value, minimax(child, depth - 1, HUMAN_PLAYER))
-        return value
-    else:
-        value = math.inf
-        for child in generate_children(node, piece):
-            value = min(value, minimax(child, depth - 1, AI_PLAYER))
-        return value
+def get_valid_location(board):
+    """return valid column in board"""
+    valid = []
+    for col in range(COL):
+        if is_valid_location(board, col):
+            valid.append(col)
+    return valid  
 
-def print_board(board):
-    print(np.flip(board, 0))
+
+def generate_children(board, piece):
+    """generate 7 children at most"""
+    valid = get_valid_location(board)
+    children = []
+    for valid_col in valid:
+        c_board = np.copy(board)
+        row = get_next_row(board, valid_col)
+        drop(c_board, row, valid_col, piece)
+        children.append(temp)
+    return children
+
+
+def minimax(board, depth, piece):
+    # TODO: return column of the board
+    valid_location = get_valid_location(board)
+    if depth == 0 or is_terminal(board):
+        if is_terminal(board):
+            ai_score = check_board(board, AI, 4)
+            player_score = check_board(board, PLAYER_1, 4)
+            if ai_score > player_score:
+                return None, math.inf
+            elif ai_score < player_score:
+                return None, -math.inf
+            else:
+                return None, 0
+        else:
+            return None, evaluate(board, AI)
+
+    if piece == AI:
+        score = -math.inf
+        column = random.choice(valid_location)
+        for col in valid_location:
+            row = get_next_row(board, col)
+            board_copy = board.copy()
+            drop(board_copy, row, col, AI)
+            max_score = minimax(board_copy, depth - 1, PLAYER_1)[1]
+            if max_score > score:
+                score = max_score
+                column = col
+        return column, score
+
+    else:
+        score = math.inf
+        column = random.choice(valid_location)
+        for col in valid_location:
+            row = get_next_row(board, col)
+            board_copy = board.copy()
+            drop(board_copy, row, col, PLAYER_1)
+            min_score = minimax(board_copy, depth - 1, AI)[1]
+            if min_score < score:
+                score = min_score
+                column = col
+        return column, score
+
+      
 # board = [[0, 0, 0, 0, 0, 0, 0],
 #          [0, 0, 0, 0, 0, 0, 0],
 #          [0, 0, 0, 0, 0, 0, 0],
