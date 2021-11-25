@@ -163,13 +163,13 @@ def evaluate_1(board):
     return score
 
 
-def minimax(board, depth, is_alpha_beta: bool, alpha, beta, piece):
+def minimax(board, depth, is_alpha_beta: bool, piece, alpha=-math.inf, beta=math.inf):
     # TODO: return column of the board
     valid_location = get_valid_location(board)
     if depth == 0 or is_terminal(board):
         if is_terminal(board):
-            ai_score = check_board(board, AI, 4)
-            player_score = check_board(board, PLAYER_1, 4)
+            ai_score = check_board(board, AI)
+            player_score = check_board(board, PLAYER_1)
             if ai_score > player_score:
                 return None, math.inf
             elif ai_score < player_score:
@@ -214,25 +214,3 @@ def minimax(board, depth, is_alpha_beta: bool, alpha, beta, piece):
                 if alpha >= beta:
                     break
         return column, score
-
-# board = [[0, 0, 0, 0, 0, 0, 0],
-#          [0, 0, 0, 0, 0, 0, 0],
-#          [0, 0, 0, 0, 0, 0, 0],
-#          [0, 0, 0, 0, 0, 0, 0],
-#          [0, 0, 0, 0, 0, 0, 0],
-#          [0, 1, 2, 0, 0, 0, 0]]
-# #
-# board = np.array(board)
-# #
-# # board[1][1] = 2
-# # board[5][0] = 1
-# # board[3][2] = 1
-# # board[4][4] = 2
-# # board[3][6] = 1
-# # board[3][3] = 2
-# # board[2][2] = 2
-# print(board)
-# # print("---------------------------------------------")
-# # generate_children(board,PLAYER_1)
-# print(minmax(board, 2))
-# print(generate_children(board, PLAYER_1))

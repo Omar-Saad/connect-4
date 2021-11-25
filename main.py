@@ -68,17 +68,11 @@ if __name__ == '__main__':
                         turn = turn % 2
 
             if turn == AI_TURN:
-                # <<<<<<< omar
-                # GET the next move from min-max (New Board)
-                # board = minmax(board, 3)
-                # pygame.time.wait(200)
-                # 2nd method
-                col, score = minimax(board, 6, True, -math.inf, math.inf, AI)
+                col, score = minimax(board, 5, True, AI)
                 if is_valid_location(board, col).any():
                     row = get_next_row(board, col)
                     print(col, score)
                     drop(board, row, col, AI)
-                # >>>>>>> main
                 turn += 1
                 turn = turn % 2
 
