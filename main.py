@@ -74,7 +74,7 @@ if __name__ == '__main__':
                 # pygame.time.wait(200)
                 # 2nd method
                 col, score = minimax(board, 6, True, -math.inf, math.inf, AI)
-                if is_valid_location(board, col):
+                if is_valid_location(board, col).any():
                     row = get_next_row(board, col)
                     print(col, score)
                     drop(board, row, col, AI)
