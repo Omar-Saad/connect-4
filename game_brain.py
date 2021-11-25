@@ -186,7 +186,7 @@ def minimax(board, depth, is_alpha_beta: bool, piece, alpha=-math.inf, beta=math
             row = get_next_row(board, col)
             board_copy = board.copy()
             drop(board_copy, row, col, AI)
-            max_score = minimax(board_copy, depth - 1, is_alpha_beta, alpha, beta, PLAYER_1)[1]
+            max_score = minimax(board_copy, depth - 1, is_alpha_beta, PLAYER_1, alpha, beta)[1]
             if max_score > score:
                 score = max_score
                 column = col
@@ -204,7 +204,7 @@ def minimax(board, depth, is_alpha_beta: bool, piece, alpha=-math.inf, beta=math
             row = get_next_row(board, col)
             board_copy = board.copy()
             drop(board_copy, row, col, PLAYER_1)
-            min_score = minimax(board_copy, depth - 1, is_alpha_beta, alpha, beta, AI)[1]
+            min_score = minimax(board_copy, depth - 1, is_alpha_beta, AI, alpha, beta)[1]
             if min_score < score:
                 score = min_score
                 column = col
