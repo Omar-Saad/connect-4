@@ -70,19 +70,19 @@ if __name__ == '__main__':
             if turn == AI_TURN:
                 # <<<<<<< omar
                 # GET the next move from min-max (New Board)
-                board = minmax(board, 3)
-                pygame.time.wait(200)
+                # board = minmax(board, 3)
+                # pygame.time.wait(200)
                 # 2nd method
-                col, score = minimax(board, 3, AI)
+                col, score = minimax(board, 6, True, -math.inf, math.inf, AI)
                 if is_valid_location(board, col):
                     row = get_next_row(board, col)
-                    print(col)
+                    print(col, score)
                     drop(board, row, col, AI)
                 # >>>>>>> main
                 turn += 1
                 turn = turn % 2
 
-            if not (board == 0).any():
+            if not len(get_valid_location(board)):
                 game_over = True
                 score_1 = check_board(board, HUMAN)
                 score_2 = check_board(board, AI)

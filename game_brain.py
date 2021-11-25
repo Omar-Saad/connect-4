@@ -150,7 +150,20 @@ def generate_children(board, piece):
     return children
 
 
-def minimax(board, depth, piece):
+def evaluate_1(board):
+    score = 0
+    center_array = [int(i) for i in list(board[:, COL // 2])]
+    center_count = center_array.count(AI)
+    score += center_count * 3
+    score += check_board(board, AI) * 100
+    score += check_board(board, AI, 3) * 5
+    score += check_board(board, AI, 2) * 2
+    score -= check_board(board, HUMAN) * 100
+    score -= check_board(board, HUMAN, 3) * 50
+    return score
+
+
+def minimax(board, depth, is_alpha_beta: bool, alpha, beta, piece):
     # TODO: return column of the board
     valid_location = get_valid_location(board)
     if depth == 0 or is_terminal(board):
@@ -164,7 +177,7 @@ def minimax(board, depth, piece):
             else:
                 return None, 0
         else:
-            return None, evaluate(board, AI)
+            return None, evaluate_1(board)
 
     if piece == AI:
         score = -math.inf
@@ -173,10 +186,15 @@ def minimax(board, depth, piece):
             row = get_next_row(board, col)
             board_copy = board.copy()
             drop(board_copy, row, col, AI)
-            max_score = minimax(board_copy, depth - 1, PLAYER_1)[1]
+            max_score = minimax(board_copy, depth - 1, is_alpha_beta, alpha, beta, PLAYER_1)[1]
             if max_score > score:
                 score = max_score
                 column = col
+            # Alpha Beta
+            if is_alpha_beta:
+                alpha = max(alpha, score)
+                if alpha >= beta:
+                    break
         return column, score
 
     else:
@@ -186,10 +204,15 @@ def minimax(board, depth, piece):
             row = get_next_row(board, col)
             board_copy = board.copy()
             drop(board_copy, row, col, PLAYER_1)
-            min_score = minimax(board_copy, depth - 1, AI)[1]
+            min_score = minimax(board_copy, depth - 1, is_alpha_beta, alpha, beta, AI)[1]
             if min_score < score:
                 score = min_score
                 column = col
+                # Alpha Beta
+            if is_alpha_beta:
+                beta = min(beta, score)
+                if alpha >= beta:
+                    break
         return column, score
 
 # board = [[0, 0, 0, 0, 0, 0, 0],
