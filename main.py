@@ -33,7 +33,7 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode(SIZE)
     base_font = pygame.font.Font(None, 32)
 
-    label_k = base_font.render("K", False, (255, 255, 0))
+    label_k = base_font.render("K", True, (255, 255, 0))
     screen.blit(label_k, (COL * SQUARE_SIZE + 20, 100))
 
     # Add default value for K
@@ -51,8 +51,6 @@ if __name__ == '__main__':
     color_passive = pygame.Color('chartreuse4')
     input_box_color = color_passive
     active = False
-
-
 
     game_over = False
     board = create_board()
@@ -103,12 +101,13 @@ if __name__ == '__main__':
                 # board = minmax(board, 3)
                 # pygame.time.wait(200)
                 # 2nd method
-                print("k = " + str(k))
+                # print("k = " + str(k))
                 col, score = minimax(board, k, True, AI)
+                print_tree()
 
                 if is_valid_location(board, col).any():
                     row = get_next_row(board, col)
-                    print(col, score)
+                    # print(col, score)
                     drop(board, row, col, AI)
                 # >>>>>>> main
                 turn += 1
@@ -154,7 +153,6 @@ if __name__ == '__main__':
             screen.blit(label_human_score, (COL * SQUARE_SIZE + 20, 180))
             label_ai_score = base_font.render("Ai : " + str(check_board(board, AI)), True, (0, 0, 0), (255, 255, 0))
             screen.blit(label_ai_score, (COL * SQUARE_SIZE + 20, 220))
-
 
             if not len(get_valid_location(board)):
                 game_over = True

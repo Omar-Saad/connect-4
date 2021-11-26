@@ -1,4 +1,5 @@
 from math import inf
+
 from heurestic import evaluate
 from variables import *
 
@@ -163,6 +164,9 @@ def evaluate_1(board):
     return score
 
 
+q = []
+
+
 def minimax(board, depth, is_alpha_beta: bool, piece, alpha=-math.inf, beta=math.inf):
     # TODO: return column of the board
     valid_location = get_valid_location(board)
@@ -182,11 +186,15 @@ def minimax(board, depth, is_alpha_beta: bool, piece, alpha=-math.inf, beta=math
     if piece == AI:
         score = -math.inf
         column = random.choice(valid_location)
+        a = []
+
         for col in valid_location:
             row = get_next_row(board, col)
             board_copy = board.copy()
             drop(board_copy, row, col, AI)
             max_score = minimax(board_copy, depth - 1, is_alpha_beta, PLAYER_1, alpha, beta)[1]
+            a.append(max_score)
+
             if max_score > score:
                 score = max_score
                 column = col
@@ -195,16 +203,24 @@ def minimax(board, depth, is_alpha_beta: bool, piece, alpha=-math.inf, beta=math
                 alpha = max(alpha, score)
                 if alpha >= beta:
                     break
+        q.append("max")
+        q.append(score)
+
+        q.append(a)
+
         return column, score
 
     else:
         score = math.inf
         column = random.choice(valid_location)
+        a = []
+
         for col in valid_location:
             row = get_next_row(board, col)
             board_copy = board.copy()
             drop(board_copy, row, col, PLAYER_1)
             min_score = minimax(board_copy, depth - 1, is_alpha_beta, AI, alpha, beta)[1]
+            a.append(min_score)
             if min_score < score:
                 score = min_score
                 column = col
@@ -213,7 +229,41 @@ def minimax(board, depth, is_alpha_beta: bool, piece, alpha=-math.inf, beta=math
                 beta = min(beta, score)
                 if alpha >= beta:
                     break
+        q.append("min")
+        q.append(score)
+        q.append(a)
         return column, score
+
+
+def print_tree():
+    while len(q) > 0:
+        x = q.pop(0)
+        # print(x)
+        if isinstance(x, str):
+            print(x + " Choose : " + str(q.pop(0)))
+
+        elif isinstance(x, list):
+            for i in x:
+                print(i, end="    ")
+            print()
+
+        # if x != "max" and x != "min":
+        #     if x is list and len(x) == 1:
+        #         if prev == "min" or prev == "max":
+        #             print("" + prev + " Choose  " + str(x))
+        #     else:
+        #         for i in x:
+        #             print(i, end="      ")
+        # elif x=="max":
+        #     print()
+        #     print("Max Start")
+        #     print("------------------------")
+        # elif x=="min":
+        #     print()
+        #     print("Min Start")
+        #     print("------------------------")
+
+        prev = x
 
 # board = [[0, 0, 0, 0, 0, 0, 0],
 #          [0, 0, 0, 0, 0, 0, 0],
