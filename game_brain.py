@@ -136,16 +136,16 @@ def get_valid_location(board):
     return valid
 
 
-def generate_children(board, piece):
-    """generate 7 children at most"""
-    valid = get_valid_location(board)
-    children = []
-    for valid_col in valid:
-        c_board = np.copy(board)
-        row = get_next_row(board, valid_col)
-        drop(c_board, row, valid_col, piece)
-        children.append(c_board)
-    return children
+# def generate_children(board, piece):
+#     """generate 7 children at most"""
+#     valid = get_valid_location(board)
+#     children = []
+#     for valid_col in valid:
+#         c_board = np.copy(board)
+#         row = get_next_row(board, valid_col)
+#         drop(c_board, row, valid_col, piece)
+#         children.append(c_board)
+#     return children
 
 
 def evaluate_1(board):
@@ -161,12 +161,12 @@ def evaluate_1(board):
     return score
 
 
-q = []
-parent_map = dict()
+from collections import deque
+
+tree = deque()
 
 
 def minimax(board, depth, is_alpha_beta: bool, piece, alpha=-math.inf, beta=math.inf):
-    # TODO: return column of the board
     valid_location = get_valid_location(board)
     if depth == 0 or is_terminal(board):
         if is_terminal(board):
@@ -200,10 +200,10 @@ def minimax(board, depth, is_alpha_beta: bool, piece, alpha=-math.inf, beta=math
                 alpha = max(alpha, score)
                 if alpha >= beta:
                     break
-        q.append("max")
-        q.append([score, depth])
+        tree.append("max")
+        tree.append([score, depth])
 
-        q.append(a)
+        tree.append(a)
 
         return column, score
 
@@ -226,22 +226,22 @@ def minimax(board, depth, is_alpha_beta: bool, piece, alpha=-math.inf, beta=math
                 beta = min(beta, score)
                 if alpha >= beta:
                     break
-        q.append("min")
-        q.append([score, depth])
-        q.append(a)
+        tree.append("min")
+        tree.append([score, depth])
+        tree.append(a)
         return column, score
 
 
 def print_tree():
-    while len(q) > 0:
-        x = q.pop(0)
+    while len(tree) > 0:
+        x = tree.popleft()
         if isinstance(x, str):
-            print("                    " * (q[0][1] - 1), end="")
-            print(x + " Choose : " + str(q[0][0]))
-            print("                    " * (q[0][1] - 1), end="")
-            print("depth = " + str(q[0][1]))
-            print("                    " * (q[0][1] - 1), end="")
-            q.pop(0)
+            print("                    " * (tree[0][1] - 1), end="")
+            print(x + " Choose : " + str(tree[0][0]))
+            print("                    " * (tree[0][1] - 1), end="")
+            print("depth = " + str(tree[0][1]))
+            print("                    " * (tree[0][1] - 1), end="")
+            tree.popleft()
 
         elif isinstance(x, list):
             for i in x:

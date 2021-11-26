@@ -59,6 +59,7 @@ if __name__ == '__main__':
 
     score_1 = score_2 = 0
     while not game_over:
+        # TODO screen to choose difficulty and puring option and start playing with constant k
         draw_board(board)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -144,7 +145,7 @@ if __name__ == '__main__':
             label_human_score = base_font.render("Human : " + str(check_board(board, HUMAN)), True, (0, 0, 0),
                                                  (255, 255, 0))
             screen.blit(label_human_score, (COL * SQUARE_SIZE + 20, 180))
-            label_ai_score = base_font.render("Ai : " + str(check_board(board, AI)), True, (0, 0, 0), (255, 255, 0))
+            label_ai_score = base_font.render("AI : " + str(check_board(board, AI)), True, (0, 0, 0), (255, 255, 0))
             screen.blit(label_ai_score, (COL * SQUARE_SIZE + 20, 220))
 
             if not len(get_valid_location(board)):
@@ -152,7 +153,7 @@ if __name__ == '__main__':
                 score_1 = check_board(board, HUMAN)
                 score_2 = check_board(board, AI)
                 print(score_1, score_2)
-
+                # TODO new Screen for game over or wining and play again
                 pygame.time.wait(3000)
 
             pygame.display.update()
