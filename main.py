@@ -99,7 +99,6 @@ if __name__ == '__main__':
             if turn == AI_TURN:
                 col, score = minimax(board, k, True, AI)
                 print_tree()
-
                 if is_valid_location(board, col).any():
                     row = get_next_row(board, col)
                     drop(board, row, col, AI)

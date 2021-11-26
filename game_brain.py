@@ -1,4 +1,5 @@
 from variables import *
+from collections import deque
 
 
 def create_board():
@@ -161,8 +162,6 @@ def evaluate_1(board):
     return score
 
 
-from collections import deque
-
 tree = deque()
 
 
@@ -233,6 +232,7 @@ def minimax(board, depth, is_alpha_beta: bool, piece, alpha=-math.inf, beta=math
 
 
 def print_tree():
+    nodes_expanded = len(tree)
     while len(tree) > 0:
         x = tree.popleft()
         if isinstance(x, str):
@@ -248,3 +248,4 @@ def print_tree():
                 print(i, end=" ")
             print()
             print("--------------------------------")
+    print(f"Number of nodes expanded = {nodes_expanded}")
