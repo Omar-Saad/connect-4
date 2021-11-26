@@ -214,3 +214,25 @@ def minimax(board, depth, is_alpha_beta: bool, piece, alpha=-math.inf, beta=math
                 if alpha >= beta:
                     break
         return column, score
+
+# board = [[0, 0, 0, 0, 0, 0, 0],
+#          [0, 0, 0, 0, 0, 0, 0],
+#          [0, 0, 0, 0, 0, 0, 0],
+#          [0, 0, 0, 0, 0, 0, 0],
+#          [0, 0, 0, 0, 0, 0, 0],
+#          [0, 1, 2, 0, 0, 0, 0]]
+# #
+# board = np.array(board)
+# #
+# # board[1][1] = 2
+# # board[5][0] = 1
+# # board[3][2] = 1
+# # board[4][4] = 2
+# # board[3][6] = 1
+# # board[3][3] = 2
+# # board[2][2] = 2
+# print(board)
+# # print("---------------------------------------------")
+# # generate_children(board,PLAYER_1)
+# print(minmax(board, 2))
+# print(generate_children(board, PLAYER_1))
