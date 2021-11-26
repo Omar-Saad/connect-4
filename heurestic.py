@@ -13,26 +13,26 @@ def check_for_streak(state, piece, streak):
 
 
 def vertical_streak(row, column, state, streak):
-    consecutiveCount = 0
+    consecutive_count = 0
     for i in range(row, ROWS):
         if state[i][column] == state[row][column]:
-            consecutiveCount += 1
+            consecutive_count += 1
         else:
             break
-    if consecutiveCount >= streak:
+    if consecutive_count >= streak:
         return 1
     else:
         return 0
 
 
 def horizontal_streak(row, column, state, streak):
-    consecutiveCount = 0
+    consecutive_count = 0
     for j in range(column, COL):
         if state[row][j] == state[row][column]:
-            consecutiveCount += 1
+            consecutive_count += 1
         else:
             break
-    if consecutiveCount >= streak:
+    if consecutive_count >= streak:
         return 1
     else:
         return 0

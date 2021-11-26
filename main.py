@@ -42,7 +42,7 @@ if __name__ == '__main__':
     # create rectangle
     input_rect = pygame.Rect(COL * SQUARE_SIZE + 20, 130, 120, 32)
 
-    # color_active stores color(lightskyblue3) which
+    # color_active stores color(light sky blue 3) which
     # gets active when input box is clicked by user
     color_active = pygame.Color('lightskyblue3')
 
@@ -96,18 +96,11 @@ if __name__ == '__main__':
                             turn = turn % 2
 
             if turn == AI_TURN:
-                # <<<<<<< omar
-                # GET the next move from min-max (New Board)
-                # board = minmax(board, 3)
-                # pygame.time.wait(200)
-                # 2nd method
-                # print("k = " + str(k))
                 col, score = minimax(board, k, True, AI)
                 print_tree()
 
                 if is_valid_location(board, col).any():
                     row = get_next_row(board, col)
-                    # print(col, score)
                     drop(board, row, col, AI)
                 # >>>>>>> main
                 turn += 1

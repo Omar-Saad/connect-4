@@ -1,6 +1,3 @@
-from math import inf
-
-from heurestic import evaluate
 from variables import *
 
 
@@ -68,42 +65,42 @@ def generate_possible_moves(state):
     return possible_moves
 
 
-def maximize(board, k):
-    if not (board == 0).any() or k == 0:
-        return None, evaluate(board)
-    k -= 1
-    (max_child, max_utility) = (None, -inf)
-
-    for child in generate_children(board, AI_PLAYER):
-        (temp_child, utility) = minimize(child, k)
-
-        if utility > max_utility:
-            max_child, max_utility = child, utility
-
-    return max_child, max_utility
-
-
-def minimize(board, k):
-    if not (board == 0).any() or k == 0:
-        return None, evaluate(board)
-    k -= 1
-    (min_child, min_utility) = (None, inf)
-
-    for child in generate_children(board, HUMAN_PLAYER):
-        (temp_child, utility) = maximize(child, k)
-
-        if utility < min_utility:
-            min_child, min_utility = child, utility
-
-    return min_child, min_utility
-
-
-def minmax(board, k):
-    (child, utility) = maximize(board, k)
-    print(child)
-    print("util = " + str(utility))
-    return child
-
+# def maximize(board, k):
+#     if not (board == 0).any() or k == 0:
+#         return None, evaluate(board)
+#     k -= 1
+#     (max_child, max_utility) = (None, -inf)
+#
+#     for child in generate_children(board, AI_PLAYER):
+#         (temp_child, utility) = minimize(child, k)
+#
+#         if utility > max_utility:
+#             max_child, max_utility = child, utility
+#
+#     return max_child, max_utility
+#
+#
+# def minimize(board, k):
+#     if not (board == 0).any() or k == 0:
+#         return None, evaluate(board)
+#     k -= 1
+#     (min_child, min_utility) = (None, inf)
+#
+#     for child in generate_children(board, HUMAN_PLAYER):
+#         (temp_child, utility) = maximize(child, k)
+#
+#         if utility < min_utility:
+#             min_child, min_utility = child, utility
+#
+#     return min_child, min_utility
+#
+#
+# def minimax(board, k):
+#     (child, utility) = maximize(board, k)
+#     print(child)
+#     print("util = " + str(utility))
+#     return child
+#
 
 # SECOND minimax implementation
 
@@ -165,6 +162,7 @@ def evaluate_1(board):
 
 
 q = []
+parent_map = dict()
 
 
 def minimax(board, depth, is_alpha_beta: bool, piece, alpha=-math.inf, beta=math.inf):
@@ -194,7 +192,6 @@ def minimax(board, depth, is_alpha_beta: bool, piece, alpha=-math.inf, beta=math
             drop(board_copy, row, col, AI)
             max_score = minimax(board_copy, depth - 1, is_alpha_beta, PLAYER_1, alpha, beta)[1]
             a.append(max_score)
-
             if max_score > score:
                 score = max_score
                 column = col
@@ -204,7 +201,7 @@ def minimax(board, depth, is_alpha_beta: bool, piece, alpha=-math.inf, beta=math
                 if alpha >= beta:
                     break
         q.append("max")
-        q.append(score)
+        q.append([score, depth])
 
         q.append(a)
 
@@ -230,7 +227,7 @@ def minimax(board, depth, is_alpha_beta: bool, piece, alpha=-math.inf, beta=math
                 if alpha >= beta:
                     break
         q.append("min")
-        q.append(score)
+        q.append([score, depth])
         q.append(a)
         return column, score
 
@@ -238,51 +235,16 @@ def minimax(board, depth, is_alpha_beta: bool, piece, alpha=-math.inf, beta=math
 def print_tree():
     while len(q) > 0:
         x = q.pop(0)
-        # print(x)
         if isinstance(x, str):
-            print(x + " Choose : " + str(q.pop(0)))
+            print("                    " * (q[0][1] - 1), end="")
+            print(x + " Choose : " + str(q[0][0]))
+            print("                    " * (q[0][1] - 1), end="")
+            print("depth = " + str(q[0][1]))
+            print("                    " * (q[0][1] - 1), end="")
+            q.pop(0)
 
         elif isinstance(x, list):
             for i in x:
-                print(i, end="    ")
+                print(i, end=" ")
             print()
-
-        # if x != "max" and x != "min":
-        #     if x is list and len(x) == 1:
-        #         if prev == "min" or prev == "max":
-        #             print("" + prev + " Choose  " + str(x))
-        #     else:
-        #         for i in x:
-        #             print(i, end="      ")
-        # elif x=="max":
-        #     print()
-        #     print("Max Start")
-        #     print("------------------------")
-        # elif x=="min":
-        #     print()
-        #     print("Min Start")
-        #     print("------------------------")
-
-        prev = x
-
-# board = [[0, 0, 0, 0, 0, 0, 0],
-#          [0, 0, 0, 0, 0, 0, 0],
-#          [0, 0, 0, 0, 0, 0, 0],
-#          [0, 0, 0, 0, 0, 0, 0],
-#          [0, 0, 0, 0, 0, 0, 0],
-#          [0, 1, 2, 0, 0, 0, 0]]
-# #
-# board = np.array(board)
-# #
-# # board[1][1] = 2
-# # board[5][0] = 1
-# # board[3][2] = 1
-# # board[4][4] = 2
-# # board[3][6] = 1
-# # board[3][3] = 2
-# # board[2][2] = 2
-# print(board)
-# # print("---------------------------------------------")
-# # generate_children(board,PLAYER_1)
-# print(minmax(board, 2))
-# print(generate_children(board, PLAYER_1))
+            print("--------------------------------")
