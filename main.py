@@ -1,4 +1,5 @@
 from game_brain import *
+from gui import *
 
 
 def draw_board(board):
@@ -33,9 +34,14 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode(SIZE)
     base_font = pygame.font.Font(None, 32)
 
+    label_pruning = base_font.render("Pruning", True, (255, 255, 0))
+    screen.blit(label_pruning, (COL * SQUARE_SIZE + 20, 300))
+    pruning = True
+    input_rect_1 = pygame.Rect(COL * SQUARE_SIZE + 20, 330, 120, 32)
+    input_rect_2 = pygame.Rect(COL * SQUARE_SIZE + 20, 365, 120, 32)
+
     label_k = base_font.render("K", True, (255, 255, 0))
     screen.blit(label_k, (COL * SQUARE_SIZE + 20, 100))
-
     # Add default value for K
     k = 4
     user_text = '' + str(k)
@@ -50,13 +56,15 @@ if __name__ == '__main__':
     # color of input box.
     color_passive = pygame.Color('chartreuse4')
     input_box_color = color_passive
+    rect_1_color = color_active
+    rect_2_color = color_passive
     active = False
 
     game_over = False
     board = create_board()
     # Choosing random player to start the game
-    turn = random.randint(HUMAN_TURN, AI_TURN)
 
+    turn = random.randint(HUMAN_TURN, AI_TURN)
     score_1 = score_2 = 0
     while not game_over:
         # TODO screen to choose difficulty and puring option and start playing with constant k
@@ -85,6 +93,16 @@ if __name__ == '__main__':
                     active = True
                 else:
                     active = False
+
+                if input_rect_1.collidepoint(event.pos):
+                    pruning = True
+                    rect_1_color = color_active
+                    rect_2_color = color_passive
+                elif input_rect_2.collidepoint(event.pos):
+                    pruning = False
+                    rect_1_color = color_passive
+                    rect_2_color = color_active
+
                 if event.pos[0] < COL * SQUARE_SIZE - SQUARE_SIZE // 2:
                     pos_x = event.pos[0]
                     col = pos_x // SQUARE_SIZE
@@ -97,12 +115,11 @@ if __name__ == '__main__':
                             turn = turn % 2
 
             if turn == AI_TURN:
-                col, score = minimax(board, k, True, AI)
+                col, score = minimax(board, k, pruning, AI)
                 print_tree()
                 if is_valid_location(board, col).any():
                     row = get_next_row(board, col)
                     drop(board, row, col, AI)
-                # >>>>>>> main
                 turn += 1
                 turn = turn % 2
 
@@ -127,8 +144,15 @@ if __name__ == '__main__':
             pygame.draw.rect(screen, input_box_color, input_rect)
             text_surface = base_font.render(user_text, True, (255, 255, 255))
 
+            pygame.draw.rect(screen, rect_1_color, input_rect_1)
+            pygame.draw.rect(screen, rect_2_color, input_rect_2)
+            text_surface_1 = base_font.render("True", True, (255, 255, 255))
+            text_surface_2 = base_font.render("False", True, (255, 255, 255))
+
             # render at position stated in arguments
             screen.blit(text_surface, (input_rect.x + 5, input_rect.y + 5))
+            screen.blit(text_surface_1, (input_rect_1.x + 5, input_rect_1.y + 5))
+            screen.blit(text_surface_2, (input_rect_2.x + 5, input_rect_2.y + 5))
 
             # set width of textfield so that text cannot get
             # outside of user's text input
