@@ -1,3 +1,5 @@
+import time
+
 from game_brain import *
 from gui import *
 
@@ -115,8 +117,11 @@ if __name__ == '__main__':
                             turn = turn % 2
 
             if turn == AI_TURN:
+                start_time = time.time()
                 col, score = minimax(board, k, pruning, AI)
-                print_tree()
+                print_tree(k)
+                print("Min-Max Running Time = " + str(time.time() - start_time))
+
                 if is_valid_location(board, col).any():
                     row = get_next_row(board, col)
                     drop(board, row, col, AI)

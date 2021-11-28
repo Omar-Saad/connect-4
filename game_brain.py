@@ -178,6 +178,7 @@ def minimax(board, depth, is_alpha_beta: bool, piece, alpha=-math.inf, beta=math
             else:
                 return None, 0
         else:
+
             return None, evaluate_1(board)
 
     if piece == AI:
@@ -231,20 +232,22 @@ def minimax(board, depth, is_alpha_beta: bool, piece, alpha=-math.inf, beta=math
         return column, score
 
 
-def print_tree():
-    nodes_expanded = len(tree)
+def print_tree(depth):
+    nodes_expanded = 0
+
     while len(tree) > 0:
         x = tree.popleft()
         if isinstance(x, str):
-            print("                    " * (tree[0][1] - 1), end="")
+            print("                    " * (depth - tree[0][1]), end="")
             print(x + " Choose : " + str(tree[0][0]))
-            print("                    " * (tree[0][1] - 1), end="")
-            print("depth = " + str(tree[0][1]))
-            print("                    " * (tree[0][1] - 1), end="")
+            print("                    " * (depth - tree[0][1]), end="")
+            print("depth = " + str(depth - tree[0][1]))
+            print("                    " * (depth - tree[0][1]), end="")
             tree.popleft()
 
         elif isinstance(x, list):
             for i in x:
+                nodes_expanded += 1
                 print(i, end=" ")
             print()
             print("--------------------------------")
