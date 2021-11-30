@@ -1,3 +1,4 @@
+import os
 import time
 
 from game_brain import *
@@ -30,8 +31,8 @@ def draw_board(board):
     pygame.display.update()
 
 
+total_average_time = 0
 if __name__ == '__main__':
-
     pygame.init()
     screen = pygame.display.set_mode(SIZE)
     base_font = pygame.font.Font(None, 32)
@@ -119,8 +120,10 @@ if __name__ == '__main__':
             if turn == AI_TURN:
                 start_time = time.time()
                 col, score = minimax(board, k, pruning, AI)
+                end_time = time.time()
+                total_average_time += end_time - start_time
                 print_tree(k)
-                print("Min-Max Running Time = " + str(time.time() - start_time))
+                print("Min-Max Running Time = " + str(end_time - start_time))
 
                 if is_valid_location(board, col).any():
                     row = get_next_row(board, col)
@@ -185,3 +188,18 @@ if __name__ == '__main__':
                 pygame.time.wait(3000)
 
             pygame.display.update()
+    pygame.quit()
+    print("------------------------------------------------------------------")
+    if score_1 > score_2:
+        print("CONGRATULATION YOU HAVE WON")
+    elif score_1 < score_2:
+        print("YOU HAVE LOST")
+    else:
+        print("DRAW")
+    print(f"Average time per play = {(total_average_time / 21)}")
+
+    restart_game_choice = input("\nPlay Again?\nAnswer (Y,N): ")
+    if restart_game_choice.upper() == "N":
+        print("Thank You for your time")
+    elif restart_game_choice.upper() == "Y":
+        os.system("python main.py")
